@@ -9,14 +9,51 @@ This is my solution to Homework 5.
 Library imports 
 
 ```{r settings, message = FALSE} 
+library(tidyverse)
+library(dplyr)
+library(stringr)
+library(ggplot2)
 
+
+theme_set(theme_bw() + theme(legend.position = "bottom"))
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+scale_colour_discrete = scale_color_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
 ```
 
-# Problem 1
+## Problem 1
+
+```{r}
+homicide_df = 
+  read_csv('./problem1_data/homicide-data.csv')
+```
 
 
-# Problem 2
+## Problem 2
+
+Making combined tidy dataset using all the files 
+
+```{r message = FALSE}
+logitudinal_df = 
+  tibble(
+    path = list.files("./problem2_data/"),
+  ) %>%
+  mutate(
+    path = str_c("./problem2_data/", path),
+    data = map(.x = path, ~ read_csv(.x)),
+    arm = case_when(
+      str_detect(path, 'con') ~ 'control',
+      str_detect(path, 'exp') ~ 'experimental'
+    ),
+    subject_id = str_sub(path, start = -6L, end = -5L)
+  ) %>%
+  select(-path) %>%
+  unnest(data) 
+```
 
 
-# Problem 3
+## Problem 3
 
