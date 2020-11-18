@@ -1,0 +1,22 @@
+---
+title: "Homework 5"
+author: Nikhita Damaraju
+output: github_document
+---
+
+This is my solution to Homework 5.
+
+Library imports 
+
+```{r settings, message = FALSE} 
+
+```
+
+# Problem 1
+
+
+# Problem 2
+
+
+# Problem 3
+
