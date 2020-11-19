@@ -133,9 +133,12 @@ sim_results %>%
   geom_point() +
   geom_line() +
   labs(
-    title = "proportion of null hypothesis rejects vs true mean",
-    x = "true mean (mu)",
-    y = "proportion of times null hypothesis was rejected"
+    title = "Power vs effect size",
+    x = "effect size (mu)",
+    y = "proportion of null hypothesis rejects (power) "
+  ) +
+  scale_x_continuous(
+    breaks = (0:6)
   )
 ```
 
