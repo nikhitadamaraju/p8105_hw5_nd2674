@@ -132,8 +132,8 @@ sim_results %>%
   geom_point() +
   geom_line() +
   labs(
-    title = "Power vs effect size",
-    x = "effect size (mu)",
+    title = "Power vs mu",
+    x = "true mean (mu)",
     y = "proportion of null hypothesis rejects (power) "
   ) +
   scale_x_continuous(
