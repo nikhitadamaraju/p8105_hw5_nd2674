@@ -90,9 +90,8 @@ sim_hypothesis = function(n, mu, sigma = 5) {
   
   sim_data %>%
     summarize(
-      mu_hat = mean(samp),
       mu = mu,
-      t.test(samp, mu = 0, alternative = 'two.sided', paired = FALSE, conf.level = 0.95) %>% broom::tidy() %>% select(p.value)
+      t.test(samp, mu = 0, alternative = 'two.sided', paired = FALSE, conf.level = 0.95) %>% broom::tidy() %>% select(p.value, estimate)
    ) 
   
 }
@@ -112,7 +111,7 @@ for (i in 1:7) {
 sim_results = bind_rows(output) 
 ```
 
-Proportion of times null was rejected
+#### Proportion of times null was rejected
 
 ```{r}
 sim_results =
@@ -142,4 +141,45 @@ sim_results %>%
   )
 ```
 
+It can be observed that the power increases with an increase in effect size using a constant significance level of 0.05.
 
+#### Average estimate of mu_hat 
+
+```{r}
+
+average_df = 
+  sim_results %>%
+  group_by(mu) %>%
+  summarize(
+    average_estimate = mean(estimate)
+  ) %>%
+  mutate(
+    sample = 'overall'
+  )
+average_rejects = 
+  sim_results %>%
+  filter(test_result == 'reject') %>%
+  group_by(mu) %>%
+  summarize(
+    average_estimate = mean(estimate)
+  ) %>%
+  mutate(
+    sample = 'null hypothesis rejects'
+  )
+
+
+rbind(average_df, average_rejects) %>%
+ggplot(aes(x = mu, y = average_estimate, group = sample, color = sample)) +
+geom_point() +
+geom_line() +
+labs(
+  title = "Average mu_hat vs mu",
+  x = "effect size (mu)",
+  y = "average mu_hat  "
+) +
+scale_x_continuous(
+  breaks = (0:6)
+)
+```
+
+The sample average of mu_hat for the null rejects is *not* approximately equal to the true value of mu. This is because the probability of rejecting the null hypothesis is the lowest when the estimated mean is closer to 0. 
