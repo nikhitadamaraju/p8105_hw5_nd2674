@@ -22,6 +22,9 @@ options(
 )
 scale_colour_discrete = scale_color_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
+
+# setting seed value
+set.seed(1)
 ```
 
 ## Problem 1
@@ -55,10 +58,10 @@ aggregate_df =
     total_homicides = n(),
     hom_unsolved = sum(resolved == 'unsolved')
   )
-
+aggregate_df %>% knitr::kable()
 ```
 
-The raw dataset consists of homicide data for 50 cities in the United States. Columns of interest include disposition that is indicative of the status of a crime - solved or unsolved. The above table summarizes 
+The raw dataset consists of homicide data for 50 cities in the United States. Columns of interest include disposition that is indicative of the status of a crime - solved or unsolved. The above table summarizes the total homicides and unsolved homicides by city
 
 #### Prop.test for Baltimore
 
@@ -148,6 +151,7 @@ The data from the longitudinal study contains 10 participants with unique subjec
 Function to calculate all required variables for each dataset
 
 ```{r}
+
 sim_hypothesis = function(n, mu, sigma = 5) {
   
   sim_data = tibble(
@@ -234,6 +238,7 @@ average_rejects =
     sample = 'null hypothesis rejects'
   )
 
+# plotting both plots together 
 
 rbind(average_df, average_rejects) %>%
 ggplot(aes(x = mu, y = average_estimate, group = sample, color = sample)) +
@@ -241,7 +246,7 @@ geom_point() +
 geom_line() +
 labs(
   title = "Average mu_hat vs mu",
-  x = "effect size (mu)",
+  x = "true mean (mu)",
   y = "average mu_hat  "
 ) +
 scale_x_continuous(
