@@ -79,3 +79,64 @@ The data from the longitudinal study contains 10 participants with unique subjec
 
 ## Problem 3
 
+Function to calculate all required variables for each dataset
+
+```{r}
+sim_hypothesis = function(n, mu, sigma = 5) {
+  
+  sim_data = tibble(
+    samp = rnorm(n, mean = mu, sd = sigma),
+  )
+  
+  sim_data %>%
+    summarize(
+      mu_hat = mean(samp),
+      mu = mu,
+      t.test(samp, mu = 0, alternative = 'two.sided', paired = FALSE, conf.level = 0.95) %>% broom::tidy() %>% select(p.value)
+   ) 
+  
+}
+  
+```
+
+Running function for different values of mu for 5000 iterations
+
+```{r}
+output = vector("list", 7)
+
+for (i in 1:7) {
+  output[[i]] = rerun(5000, sim_hypothesis(30, (i - 1))) %>%
+    bind_rows()
+}
+
+sim_results = bind_rows(output) 
+```
+
+Proportion of times null was rejected
+
+```{r}
+sim_results =
+  sim_results %>%
+  mutate(
+    test_result = case_when(
+      p.value < .05 ~ "reject",
+      p.value >= .05 ~ "fail to reject"
+    ))
+
+sim_results %>%
+  filter(test_result == 'reject') %>%
+  group_by(mu) %>%
+  summarize(
+    proportion = n()/5000
+  ) %>%
+  ggplot(aes(x = mu, y = proportion)) +
+  geom_point() +
+  geom_line() +
+  labs(
+    title = "proportion of null hypothesis rejects vs true mean",
+    x = "true mean (mu)",
+    y = "proportion of times null hypothesis was rejected"
+  )
+```
+
+
